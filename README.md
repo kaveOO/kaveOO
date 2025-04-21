@@ -1,3 +1,12 @@
+<p align="center" style="text-align: justify; max-width: 700px; margin: auto;">
+  <em>
+    Hi, my name is Alban. I'm a 19-year-old developer, coding since October 2024. I'm passionate about understanding how game anti-cheat systems work and exploring the methods used to bypass them. If you're interested in collaborating or just want to chat, feel free to reach out to me on Discord -> <strong>.kaveo</strong>
+  </em>
+</p>
+
+
+
+<br>
 <div align="center">
   <img src="https://github-readme-stats.vercel.app/api?username=kaveOO&hide_title=false&hide_rank=false&show_icons=true&include_all_commits=true&count_private=true&disable_animations=false&theme=dracula&locale=en&hide_border=true" height="150" alt="stats graph" />
   <img src="https://github-readme-stats.vercel.app/api/top-langs?username=kaveOO&locale=en&hide_title=false&layout=compact&card_width=320&langs_count=5&theme=dracula&hide_border=true" height="150" alt="languages graph" />
