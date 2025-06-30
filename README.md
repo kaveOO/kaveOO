@@ -1,6 +1,6 @@
 <p align="center" style="text-align: justify; max-width: 700px; margin: auto;">
   <em>
-    Hi, my name is Alban. I'm a 19-year-old developer, coding since October 2024. I'm passionate about understanding how game anti-cheat systems work and exploring the methods used to bypass them. If you're interested in collaborating or just want to chat, feel free to reach out to me on Discord -> <strong>.kaveo</strong>
+    Hi, my name is Alban. I'm a 20-year-old developer, coding since October 2024. I'm passionate about understanding how game anti-cheat systems work and exploring the methods used to bypass them. If you're interested in collaborating or just want to chat, feel free to reach out to me on Discord -> <strong>.kaveo</strong>
   </em>
 </p>
 
