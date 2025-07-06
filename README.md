@@ -16,18 +16,6 @@
 
 <br clear="both">
 
-<div align="center">
-  <a href="https://en.wikipedia.org/wiki/C%2B%2B" target="_blank"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/cplusplus/cplusplus-original.svg" height="30" alt="cplusplus logo" /></a>
-  <img width="12" />
-  <a href="https://en.wikipedia.org/wiki/C_(programming_language)" target="_blank"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/c/c-original.svg" height="30" alt="c logo" /></a>
-  <img width="12" />
-  <a href="https://en.wikipedia.org/wiki/Git" target="_blank"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/git/git-original.svg" height="30" alt="git logo" /></a>
-  <img width="12" />
-  <a href="https://en.wikipedia.org/wiki/Linux" target="_blank"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" height="30" alt="linux logo" /></a>
-  <img width="12" />
-  <a href="https://en.wikipedia.org/wiki/Windows" target="_blank"><img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/windows8/windows8-original.svg" height="30" alt="windows logo" /></a>
-</div>
-
 ###
 
 <div align="center">
