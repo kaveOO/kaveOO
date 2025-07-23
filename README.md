@@ -8,8 +8,8 @@
 
 <br>
 <div align="center">
-<!--   <img src="https://github-readme-stats.vercel.app/api/top-langs?username=kaveOO&locale=en&hide_title=false&layout=compact&card_width=320&langs_count=5&theme=dracula&hide_border=true" height="150" alt="languages graph" /> -->
-  <img src="https://github-readme-streak-stats-gamma-lilac.vercel.app?user=kaveOO&theme=dracula&hide_border=true" height="150" alt="streak stats" />
+  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=kaveOO&theme=dracula&show_icons=true&hide_border=true&layout=compact" height="150" />
+  <img src="https://github-readme-streak-stats-gamma-lilac.vercel.app?user=kaveOO&theme=dracula&hide_border=true" height="140" alt="streak stats" />
 </div>
 
 
