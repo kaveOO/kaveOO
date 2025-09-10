@@ -6,6 +6,13 @@
 
 
 
+  <div align="center">
+    <!-- Dracula-themed Organization Widgets -->
+  <img src="http://localhost:3000/org/42SchoolProjects" alt="42SchoolProjects Organization Widget" height="120" />
+    <img src="http://localhost:3000/org/1337Corporation" alt="1337Corporation Organization Widget" height="120" />
+  </div>
+
+
 <br>
 <div align="center">
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=kaveOO&theme=dracula&show_icons=true&hide_border=true&layout=compact" height="150" />
