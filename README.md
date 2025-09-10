@@ -8,8 +8,8 @@
 
   <div align="center">
     <!-- Dracula-themed Organization Widgets -->
-    <img src="https://org-widgtet.vercel.app/org/42SchoolProjects" alt="42SchoolProjects Organization Widget" height="80" />
-    <img src="https://org-widgtet.vercel.app/org/1337Corporation" alt="1337Corporation Organization Widget" height="80" />
+    <img src="https://org-widget.vercel.app/org/42SchoolProjects" alt="42SchoolProjects Organization Widget" height="80" />
+    <img src="https://org-widget.vercel.app/org/1337Corporation" alt="1337Corporation Organization Widget" height="80" />
   </div>
 
 
