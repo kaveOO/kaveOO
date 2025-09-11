@@ -7,9 +7,8 @@
 <br>
 
   <div align="center">
-    <!-- Dracula-themed Organization Widgets -->
-    <img src="https://org-widget.vercel.app/org/42SchoolProjects" alt="42SchoolProjects Organization Widget" height="80" />
-    <img src="https://org-widget.vercel.app/org/1337Corporation" alt="1337Corporation Organization Widget" height="80" />
+    <a href="https://github.com/42SchoolProjects" target="_blank"><img src="https://org-widget.vercel.app/org/42SchoolProjects" alt="42SchoolProjects Organization Widget" height="80" /></a>
+    <a href="https://github.com/1337Corporation" target="_blank"><img src="https://org-widget.vercel.app/org/1337Corporation" alt="1337Corporation Organization Widget" height="80" /></a>
   </div>
 
 
