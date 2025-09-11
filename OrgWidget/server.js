@@ -26,11 +26,11 @@ app.get('/org/:org', async (req, res) => {
     const svg = `<?xml version="1.0" encoding="UTF-8"?>
 <svg width="500" height="120" viewBox="0 0 500 120" fill="none" xmlns="http://www.w3.org/2000/svg">
   <rect width="500" height="120" rx="4.5" fill="${dracula.background}" />
-  <text x="25" y="45" fill="${dracula.accent}" font-size="20" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600">${data.login}</text>
-  <text x="25" y="70" fill="${dracula.foreground}" font-size="14" font-family="Segoe UI, Helvetica, Arial, sans-serif">${data.description ? (data.description.length > 55 ? data.description.slice(0, 55) + '...' : data.description) : 'No description'}</text>
-  <text x="25" y="95" fill="${dracula.green}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif">📦 ${data.public_repos} Public repos</text>
+  <text x="25" y="45" fill="${dracula.accent}" font-size="24" font-family="Segoe UI, Helvetica, Arial, sans-serif" font-weight="600">${data.login}</text>
+  <text x="25" y="70" fill="${dracula.foreground}" font-size="16" font-family="Segoe UI, Helvetica, Arial, sans-serif">${data.description ? (data.description.length > 55 ? data.description.slice(0, 55) + '...' : data.description) : 'No description'}</text>
+  <text x="25" y="95" fill="${dracula.green}" font-size="14" font-family="Segoe UI, Helvetica, Arial, sans-serif">📦 ${data.public_repos} Public repos</text>
   <circle cx="450" cy="60" r="30" fill="${dracula.accent}" opacity="0.3"/>
-  <text x="450" y="65" fill="${dracula.foreground}" font-size="12" font-family="Segoe UI, Helvetica, Arial, sans-serif" text-anchor="middle" font-weight="600">${data.login.charAt(0).toUpperCase()}</text>
+  <text x="450" y="65" fill="${dracula.foreground}" font-size="14" font-family="Segoe UI, Helvetica, Arial, sans-serif" text-anchor="middle" font-weight="600">${data.login.charAt(0).toUpperCase()}</text>
 </svg>`;
 
     // Set proper headers for GitHub compatibility
