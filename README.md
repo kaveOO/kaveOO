@@ -6,8 +6,9 @@
 
 <br>
 
-<div align="center">👽 https://kaveo.vercel.app/ 🛸</div>
+<div align="center"><a href="https://www.youtube.com/@Kaveo_o" target="_blank">👽 My Personal Blog 🛸</a></div>
 
+<br>
 <br>
 
 <div align="center">
