@@ -28,7 +28,7 @@
   <a href="https://www.youtube.com/@Kaveo_o" target="_blank"><img src="https://img.shields.io/static/v1?message=Youtube&logo=youtube&label=&color=FF0000&logoColor=white&labelColor=&style=for-the-badge" height="35" alt="youtube logo" /></a>
   <a href="https://www.faceit.com/en/players/kaveO_O" target="_blank"><img src="https://img.shields.io/static/v1?message=Faceit&logo=faceit&label=&color=FF5500&logoColor=white&labelColor=&style=for-the-badge" height="35" alt="faceit logo" /></a>
   <a href="https://steamcommunity.com/profiles/76561198826646597/" target="_blank"><img src="https://img.shields.io/static/v1?message=Steam&logo=steam&label=&color=000000&logoColor=white&labelColor=&style=for-the-badge" height="35" alt="steam logo" /></a>
-  <a href="https://www.linkedin.com/in/alban-billiette-58a17b271/" target="_blank"><img src="https://img.shields.io/static/v1?message=LinkedIn&logo=linkedin&label=&color=0077B5&logoColor=white&labelColor=&style=for-the-badge" height="35" alt="linkedin logo" /></a>
+  <a href="https://www.linkedin.com/in/kaveooo" target="_blank"><img src="https://img.shields.io/static/v1?message=LinkedIn&logo=linkedin&label=&color=0077B5&logoColor=white&labelColor=&style=for-the-badge" height="35" alt="linkedin logo" /></a>
 </div>
 
 ###
