@@ -13,7 +13,7 @@
 
 <div align="center">
   <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=kaveOO&theme=dracula&show_icons=true&hide_border=true&layout=compact" height="140" />
-  <img src="https://streak-stats.demolab.com/?user=kaveOO&theme=dracula&hide_border=true&layout=compact" height="140" alt="streak stats" />
+  <img src="https://github-readme-streak-stats-eta-lime.vercel.app?user=kaveOO&theme=dracula&hide_border=true" height="140" alt="streak stats" />
 </div>
 
 
