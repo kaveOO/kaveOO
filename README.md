@@ -12,7 +12,6 @@
 <br>
 
 <div align="center">
-  <img src="https://github-readme-streak-stats-eta-lime.vercel.app?user=kaveOO&theme=dracula&hide_border=true" height="140" alt="streak stats" />
   <img src="logtime.png" height="140" alt="logtime" />
   <img src="lol.png" height="140" alt="lol" />
 </div>
