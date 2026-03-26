@@ -6,7 +6,7 @@
 
 <br>
 
-<div align="center"><a href="https://kaveo.vercel.app/" target="_blank">👽 My Personal Blog 🛸</a></div>
+<div align="center"><a href="https://kaveo.dev/" target="_blank">👽 My Personal Blog 🛸</a></div>
 
 <br>
 <br>
