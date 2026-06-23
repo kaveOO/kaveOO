@@ -6,6 +6,10 @@
 
 <br>
 
+<div align="center"><a href="https://www.youtube.com/watch?v=L3GNfzSzfpU" target="_blank">◢◤</a></div>
+
+<br>
+
 <div align="center"><a href="https://kaveo.dev/" target="_blank">👽 My Personal Blog 🛸</a></div>
 
 <br>
