@@ -1,4 +1,4 @@
-name: Update .lastevent
+name: Update README
 
 on:
   schedule:
@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [.github/gen_readme.py]
+    paths: [.github/gen_readme.py, .github/gen_memory.py]
 
 permissions:
   contents: write
@@ -26,15 +26,19 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Regenerate README
-        run: python .github/gen_readme.py
+      - name: Regenerate README and memory window
+        run: |
+          python .github/gen_memory.py
+          python .github/gen_readme.py
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # README_TOKEN (optional PAT) lets the calendar include private contributions
+          GITHUB_TOKEN: ${{ secrets.README_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Commit if changed
         run: |
-          git diff --quiet README.md && { echo "No new event."; exit 0; }
+          git add README.md assets
+          git diff --cached --quiet && { echo "Nothing changed."; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898333+github-actions[bot]@users.noreply.github.com"
-          git commit -am "~ | Update .lastevent"
+          git commit -m "~ | Update README data"
           git push

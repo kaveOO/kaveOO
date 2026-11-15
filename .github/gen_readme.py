@@ -181,5 +181,13 @@ w("")
 w(f"{P}<b>qd</b>")
 
 readme = "<pre>\n" + "\n".join(out) + "\n</pre>\n"
+# memory window drawn by gen_memory.py, docked under the session
+readme += """
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/memory-dark.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/memory-light.svg">
+  <img src="assets/memory-dark.svg" width="100%" alt="Contribution calendar drawn as a memory dump, one byte per day">
+</picture>
+"""
 open("README.md", "w").write(readme)
 print(readme)
