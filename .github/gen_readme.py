@@ -16,26 +16,25 @@ from html import escape
 USER = "kaveOO"
 SKIP_REPOS = {f"{USER}/{USER}"}  # the README's own updates are not news
 
-BIO = ("Alban Billiette, 42 Warsaw. I reverse anti-cheats, write "
-       "Windows kernel drivers and ship full-stack products.")
+BIO = "Alban Billiette. From France, living in Warsaw."
 BIO_ADDR = 0x00403000
 
-# name, size, url, note
+# name, url, note
 MODULES = [
-    ("rustorigin",      0x4e000, "https://kaveo.dev/work/rustorigin/",       "anti-cheat for my own Rust servers. 318 bans in 30 days"),
-    ("assaultcubedma",  0x1c000, "https://github.com/kaveOO/AssaultCubeDMA", "reads game memory over a PCIe DMA card, not the OS"),
-    ("kaveos",          0x12000, "https://github.com/kaveOO/kaveOS",         "x86 kernel from scratch in C and asm, no libc"),
-    ("rustaveo",        0x61000, "https://kaveo.dev/work/rustaveo/",         "paid SaaS for Rust players, built and run alone"),
-    ("arbor",           0x38000, "https://github.com/kaveOO/Arbor",          "booking engine, 1st on Track B at Codaro x Google"),
-    ("panomoche",       0x23000, "https://github.com/kaveOO/panomoche",      "sorts street pictures for Panoramax with ML"),
+    ("rustorigin", "https://kaveo.dev/work/rustorigin/",       "anti-cheat for my own Rust servers. 318 bans in 30 days"),
+    ("assaultcubedma", "https://github.com/kaveOO/AssaultCubeDMA", "reads game memory over a PCIe DMA card, not the OS"),
+    ("kaveos", "https://github.com/kaveOO/kaveOS",         "x86 kernel from scratch in C and asm, no libc"),
+    ("rustaveo", "https://kaveo.dev/work/rustaveo/",         "paid SaaS for Rust players, built and run alone"),
+    ("arbor", "https://github.com/kaveOO/Arbor",          "booking engine, 1st on Track B at Codaro x Google"),
+    ("panomoche", "https://github.com/kaveOO/panomoche",      "sorts street pictures for Panoramax with ML"),
 ]
 
 # most recent frame first, like a real stack
 FRAMES = [
-    ("codaro_google_hackathon", 0x1f2, "1st place, booking track   2026"),
-    ("warsaw_hacks",            0x0a4, "most innovative idea       2026"),
-    ("common_core_le_havre",    0x3c0, "42 Common Core done        2026"),
-    ("main",                    0x02c, "first line of code     oct 2024"),
+    ("codaro_google_hackathon", "1st place, booking track   2026"),
+    ("warsaw_hacks", "most innovative idea       2026"),
+    ("common_core_le_havre", "42 Common Core done        2026"),
+    ("main", "first line of code     oct 2024"),
 ]
 
 LINKS = [
@@ -121,12 +120,8 @@ def previous_last_event():
         return None
 
 
-INTRO = ("**Alban Billiette**, game security and full-stack developer at 42 Warsaw, "
-         "open to full-time roles. "
-         "My profile is written as a Windows debugger session: the bold lines say what "
-         "each part is, and the blue names are links. "
-         "[kaveo.dev](https://kaveo.dev) · [CV](https://kaveo.dev/Alban-Billiette-CV.pdf) · "
-         "[contact@kaveo.dev](mailto:contact@kaveo.dev)")
+INTRO = ("I'm Alban, a developer at 42 Warsaw. I take apart anti-cheats, write Windows "
+         "kernel drivers and build full-stack products. Open to full-time roles.")
 
 P = "0:000&gt; "
 out = []
@@ -135,7 +130,7 @@ w = out.append
 # db: bio as bytes, NUL terminated, int3 padding to the end of the line
 data = BIO.encode("ascii") + b"\x00"
 data += b"\xcc" * (-len(data) % 16)
-w(f"{P}<b>* who I am, as raw bytes</b>")
+w(f"{P}<b>* about</b>")
 w(f"{P}db kaveo!bio")
 for off in range(0, len(data), 16):
     row = data[off:off + 16]
@@ -153,36 +148,34 @@ except Exception as e:
     ev = None
 ev = ev or previous_last_event()
 if ev:
-    w(f"{P}<b>* what I did last on GitHub</b>")
+    w(f"{P}<b>* last activity</b>")
     w(f"{P}.lastevent")
     out.extend(ev)
     w("")
 
 # lm: projects as loaded modules
-w(f"{P}<b>* projects (click a name)</b>")
+w(f"{P}<b>* projects</b>")
 w(f"{P}lm")
 w("start    end        module name")
 base = 0x10000000
-for name, size, url, note in MODULES:
+SIZES = [0x4e000, 0x1c000, 0x12000, 0x61000, 0x38000, 0x23000, 0x2a000, 0x19000]
+for (name, url, note), size in zip(MODULES, SIZES):
     pad = " " * (17 - len(name))
     w(f"{base:08x} {base + size:08x}   <a href=\"{url}\">{name}</a>{pad}{escape(note)}")
     base += (size + 0xfffff) & ~0xfffff  # next 1 MiB boundary
 w("")
 
 # k: history as a call stack
-w(f"{P}<b>* how I got here, newest first</b>")
-w(f"{P}k")
-w(" # ChildEBP RetAddr")
-ebp, ret = 0x0019fe60, 0x00401000
-for i, (fn, disp, note) in enumerate(FRAMES):
-    sym = f"kaveo!{fn}+0x{disp:x}"
-    w(f"{i:02x} {ebp:08x} {ret + disp * 7:08x} {sym:<38}{escape(note)}")
-    ebp += 0x5c
-w(f"{len(FRAMES):02x} {ebp:08x} 00000000 ntdll!RtlUserThreadStart+0x2f")
+w(f"{P}<b>* timeline</b>")
+w(f"{P}kc")
+w(" # Call Site")
+for i, (fn, note) in enumerate(FRAMES):
+    w(f"{i:02x} {'kaveo!' + fn:<36}{escape(note)}")
+w(f"{len(FRAMES):02x} ntdll!RtlUserThreadStart")
 w("")
 
 # du: contact strings
-w(f"{P}<b>* where to reach me</b>")
+w(f"{P}<b>* contact</b>")
 w(f"{P}du kaveo!contact")
 addr = 0x00405000
 for k, url, label in LINKS:

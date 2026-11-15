@@ -1,8 +1,9 @@
-"""Draws the contribution calendar as a WinDbg memory window.
+"""Draws recent GitHub activity as a hex editor memory view.
 
-Each byte is one day's contribution count (capped at 0xff), one row per
-weekday, one column per week, shaded by value like a hex editor. The caret
-sits on today. Writes assets/memory-{dark,light}.svg.
+The last 128 days, in order, 16 bytes per row. Each byte is that day's
+contribution count (capped at 0xff), and the row label is the date of its
+first byte. The ASCII column is what those bytes would spell, like in any
+hex editor. Writes assets/memory-{dark,light}.svg.
 
 Needs GITHUB_TOKEN (GraphQL requires auth). If the query fails, the SVGs
 already in assets/ are left alone.
@@ -15,19 +16,18 @@ from datetime import date
 
 USER = "kaveOO"
 OUT = "assets"
+ROWS, COLS = 8, 16
 
 QUERY = """{user(login:"%s"){contributionsCollection{contributionCalendar{
-  totalContributions weeks{contributionDays{date contributionCount weekday}}}}}}""" % USER
+  weeks{contributionDays{date contributionCount}}}}}}""" % USER
 
 THEMES = {
-    "dark":  dict(bg="#0d1117", panel="#161b22", line="#30363d", fg="#e6edf3",
-                  mute="#7d8590", zero="#3b424b", heat="110,149,255", caret="#e6edf3"),
-    "light": dict(bg="#ffffff", panel="#f6f8fa", line="#d0d7de", fg="#1f2328",
-                  mute="#656d76", zero="#c3cad2", heat="61,107,255", caret="#1f2328"),
+    "dark":  dict(bg="#0d1117", bar="#161b22", line="#30363d", fg="#e6edf3",
+                  mute="#7d8590", zero="#484f58", heat="110,149,255"),
+    "light": dict(bg="#ffffff", bar="#f6f8fa", line="#d0d7de", fg="#1f2328",
+                  mute="#656d76", zero="#afb8c1", heat="61,107,255"),
 }
 MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace"
-SP = "\u00a0" * 4  # SVG collapses normal spaces
-DAYS = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"]
 
 
 def fetch():
@@ -37,109 +37,84 @@ def fetch():
         headers={"Authorization": f"Bearer {os.environ['GITHUB_TOKEN']}",
                  "User-Agent": "gen-memory"})
     with urllib.request.urlopen(req, timeout=20) as r:
-        cal = json.load(r)["data"]["user"]["contributionsCollection"]["contributionCalendar"]
-    return cal["totalContributions"], cal["weeks"]
+        weeks = json.load(r)["data"]["user"]["contributionsCollection"]["contributionCalendar"]["weeks"]
+    days = [(d["date"], d["contributionCount"]) for w in weeks for d in w["contributionDays"]]
+    return days[-ROWS * COLS:]
 
 
-def level(n, cuts):
-    """0 for no contributions, else 1..4 by quartile of the active days."""
-    if n == 0:
-        return 0
-    return 1 + sum(n > c for c in cuts)
-
-
-def svg(theme, total, weeks):
+def svg(theme, days):
     c = THEMES[theme]
-    CW, CH = 21, 20             # cell size
-    LX, TY = 64, 78             # grid origin
-    W = LX + len(weeks) * CW + 24
-    H = TY + 7 * CH + 46
+    CW, RH = 34, 30                   # byte cell width, row height
+    AX = 24                           # date column
+    HX = AX + 92                      # first byte
+    SX = HX + COLS * CW + 22          # ascii column
+    CHW = 9.6                         # ascii char width at 16px
+    TOP = 50                          # below the title bar
+    W = int(SX + COLS * CHW + AX)
+    H = TOP + 34 + ROWS * RH + 18
 
-    counts = sorted(d["contributionCount"] for w in weeks for d in w["contributionDays"]
-                    if d["contributionCount"])
-    q = lambda p: counts[int(p * (len(counts) - 1))] if counts else 0
-    cuts = (q(.25), q(.5), q(.75))
-    alpha = {1: .16, 2: .32, 3: .52, 4: .78}
-
-    first = weeks[0]["contributionDays"][0]["date"]
-    last = weeks[-1]["contributionDays"][-1]["date"]
-    fmt = lambda s: date.fromisoformat(s).strftime("%b %d %Y")
-    active = len(counts)
+    active = sorted(n for _, n in days if n)
+    cuts = [active[int(p * (len(active) - 1))] for p in (.25, .5, .75)] if active else [0, 0, 0]
+    shade = lambda n: (0, .14, .3, .5, .78)[0 if not n else 1 + sum(n > k for k in cuts)]
 
     e = []
     a = e.append
     a(f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" '
-      f'xml:space="preserve" role="img" aria-label="Contribution calendar shown as a memory dump: {total} contributions '
-      f'from {fmt(first)} to {fmt(last)}">')
-    a(f'<title>{total} contributions, {fmt(first)} to {fmt(last)}</title>')
-    a(f'<style>text{{font-family:{MONO};font-size:11px;fill:{c["mute"]}}}'
-      f'.v{{fill:{c["fg"]};text-anchor:middle}}.z{{fill:{c["zero"]};text-anchor:middle}}'
-      f'.h{{fill:{c["fg"]}}}.t{{font-size:13px}}.c{{animation:b 1.1s steps(1) infinite}}'
-      f'@keyframes b{{50%{{opacity:0}}}}'
-      f'@media (prefers-reduced-motion:reduce){{.c{{animation:none}}}}</style>')
+      f'role="img" aria-label="GitHub contributions for the last {len(days)} days as a hex dump, '
+      f'one byte per day">')
+    a(f'<style>text{{font-family:{MONO};font-size:16px;fill:{c["mute"]}}}'
+      f'.b{{fill:{c["fg"]};text-anchor:middle}}.z{{fill:{c["zero"]};text-anchor:middle}}'
+      f'.s{{font-size:14px}}.f{{fill:{c["fg"]}}}'
+      f'.k{{animation:k 1.06s steps(1) infinite}}@keyframes k{{50%{{opacity:0}}}}'
+      f'@media (prefers-reduced-motion:reduce){{.k{{animation:none}}}}</style>')
     a(f'<rect width="{W}" height="{H}" rx="6" fill="{c["bg"]}"/>')
+    a(f'<path d="M6 .5h{W-12}a5.5 5.5 0 0 1 5.5 5.5v30H.5V6A5.5 5.5 0 0 1 6 .5z" fill="{c["bar"]}"/>')
     a(f'<rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="5.5" fill="none" stroke="{c["line"]}"/>')
-    # title bar, like a docked WinDbg memory window
-    a(f'<rect x="1" y="1" width="{W-2}" height="34" rx="5" fill="{c["panel"]}"/>')
-    a(f'<rect x="1" y="34" width="{W-2}" height="1" fill="{c["line"]}"/>')
-    a(f'<text x="16" y="23" class="h t">Memory</text>')
-    a(f'<text x="84" y="23" class="t">Address: kaveo!contributions{SP}my GitHub activity, '
-      f'last 12 months</text>')
-    a(f'<text x="{W-16}" y="23" class="t" text-anchor="end">{fmt(first)} .. {fmt(last)}</text>')
+    a(f'<rect x="1" y="36" width="{W-2}" height="1" fill="{c["line"]}"/>')
+    a(f'<text x="{AX}" y="24" class="s f">Memory</text>')
+    a(f'<text x="{AX + 76}" y="24" class="s">kaveo!activity</text>')
+    a(f'<text x="{W - AX}" y="24" class="s" text-anchor="end">1 byte = contributions that day</text>')
 
-    # month labels over the first week that starts in that month
-    prev = None
-    for i, w in enumerate(weeks):
-        m = date.fromisoformat(w["contributionDays"][0]["date"]).strftime("%b").lower()
-        if m != prev and i < len(weeks) - 1:
-            a(f'<text x="{LX + i*CW + 2}" y="{TY - 12}">{m}</text>')
-        prev = m
+    hy = TOP + 22
+    for i in range(COLS):
+        a(f'<text x="{HX + i*CW + CW/2}" y="{hy}" class="z">{i:02X}</text>')
 
-    for d in range(7):
-        a(f'<text x="16" y="{TY + d*CH + 14}">+{d} {DAYS[d]}</text>')
-
-    for i, w in enumerate(weeks):
-        for day in w["contributionDays"]:
-            n, d = day["contributionCount"], day["weekday"]
-            x, y = LX + i * CW, TY + d * CH
-            lv = level(n, cuts)
-            if lv:
-                a(f'<rect x="{x+1}" y="{y+1}" width="{CW-2}" height="{CH-2}" rx="2" '
-                  f'fill="rgb({c["heat"]})" fill-opacity="{alpha[lv]}"/>')
-            cls = "v" if n else "z"
-            a(f'<text x="{x + CW/2}" y="{y + 14}" class="{cls}">{min(n, 255):02x}</text>')
-            if day["date"] == last:  # caret on today
-                a(f'<rect class="c" x="{x+1}" y="{y + CH - 3}" width="{CW-2}" height="2" fill="{c["caret"]}"/>')
-
-    fy = TY + 7 * CH + 28
-    a(f'<text x="16" y="{fy}" class="t">1 byte = 1 day, the number is how many contributions{SP}{total:,} contributions{SP}'
-      f'{active} active days{SP}max 0x{counts[-1] if counts else 0:02x}</text>')
-    # legend
-    lx = W - 24 - 5 * 26 - 30
-    a(f'<text x="{lx - 8}" y="{fy}" text-anchor="end">00</text>')
-    for k in range(5):
-        x = lx + k * 26
-        if k:
-            a(f'<rect x="{x}" y="{fy - 12}" width="20" height="16" rx="2" fill="rgb({c["heat"]})" '
-              f'fill-opacity="{alpha[k]}"/>')
-        else:
-            a(f'<rect x="{x+.5}" y="{fy - 11.5}" width="19" height="15" rx="2" fill="none" stroke="{c["line"]}"/>')
-    a(f'<text x="{lx + 5*26 + 2}" y="{fy}">ff</text>')
+    for r in range(ROWS):
+        y = TOP + 34 + r * RH
+        row = days[r * COLS:(r + 1) * COLS]
+        if not row:
+            break
+        label = date.fromisoformat(row[0][0]).strftime("%b %d").lower()
+        a(f'<text x="{AX}" y="{y + 20}">{label}</text>')
+        asc = []
+        for i, (d, n) in enumerate(row):
+            x = HX + i * CW
+            if n:
+                a(f'<rect x="{x + 2}" y="{y + 3}" width="{CW - 4}" height="{RH - 6}" rx="3" '
+                  f'fill="rgb({c["heat"]})" fill-opacity="{shade(n)}"/>')
+            a(f'<text x="{x + CW/2}" y="{y + 20}" class="{"b" if n else "z"}">{min(n, 255):02X}</text>')
+            ch = chr(n) if 0x21 <= n < 0x7f else "."
+            asc.append(ch.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+        a(f'<text x="{SX}" y="{y + 20}" textLength="{len(row) * CHW:.1f}" '
+          f'lengthAdjust="spacing">{"".join(asc)}</text>')
+        if (r + 1) * COLS >= len(days):  # caret after today's byte
+            x = HX + (len(row) - 1) * CW
+            a(f'<rect class="k" x="{x + 6}" y="{y + RH - 4}" width="{CW - 12}" height="2" fill="{c["fg"]}"/>')
     a('</svg>\n')
     return "".join(e)
 
 
 def main():
     try:
-        total, weeks = fetch()
+        days = fetch()
     except Exception as e:
-        print(f"GraphQL failed ({e}), keeping the previous memory window")
+        print(f"GraphQL failed ({e}), keeping the previous memory view")
         return 0
     os.makedirs(OUT, exist_ok=True)
     for th in THEMES:
         with open(f"{OUT}/memory-{th}.svg", "w") as f:
-            f.write(svg(th, total, weeks))
-    print(f"{total} contributions over {len(weeks)} weeks")
+            f.write(svg(th, days))
+    print(f"{len(days)} days, {days[0][0]} to {days[-1][0]}")
     return 0
 
 
