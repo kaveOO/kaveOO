@@ -89,9 +89,9 @@ def svg(theme, days):
     AX = 0                            # date column
     HX = AX + 80                      # first byte
     SX = HX + COLS * CW + 20          # ascii column
-    CHW = 9                           # Plex Mono advance (600/1000) at 15px
-    TOP = 26                          # below the header line
-    W = SX + COLS * CHW
+    CHW = 9.6                         # Plex Mono advance (600/1000) at 16px
+    TOP = 28                          # below the header line
+    W = round(SX + COLS * CHW + 1)
     H = TOP + 34 + ROWS * RH + 4
 
     active = sorted(n for _, n in days if n)
@@ -101,13 +101,13 @@ def svg(theme, days):
     T = Text()
     e = []
     a = e.append
-    a(T("Memory", "sans_medium", 15, AX, 18, c["fg"]))
-    a(T("kaveo!activity", "mono", 14, AX + 74, 18, c["mute"]))
-    a(T("1 byte = contributions that day", "sans", 14, W - AX, 18, c["mute"], "end"))
+    a(T("Memory", "sans_medium", 17, AX, 19, c["fg"]))
+    a(T("kaveo!activity", "mono", 16, AX + 80, 19, c["mute"]))
+    a(T("1 byte = contributions that day", "sans", 16, W - AX, 19, c["mute"], "end"))
 
     hy = TOP + 22
     for i in range(COLS):
-        a(T(f"{i:02X}", "mono", 14, HX + i * CW + CW / 2, hy, c["zero"], "middle"))
+        a(T(f"{i:02X}", "mono", 15, HX + i * CW + CW / 2, hy, c["zero"], "middle"))
 
     for r in range(ROWS):
         y = TOP + 34 + r * RH
@@ -115,7 +115,7 @@ def svg(theme, days):
         if not row:
             break
         label = date.fromisoformat(row[0][0]).strftime("%b %d").lower()
-        a(T(label, "sans", 15, AX, y + 20, c["mute"]))
+        a(T(label, "sans", 16, AX, y + 20, c["mute"]))
         asc = ""
         for i, (d, n) in enumerate(row):
             x = HX + i * CW
@@ -125,7 +125,7 @@ def svg(theme, days):
             a(T(f"{min(n, 255):02X}", "mono", 16, x + CW / 2, y + 20,
                 c["fg"] if n else c["zero"], "middle"))
             asc += chr(n) if 0x21 <= n < 0x7f else "."
-        a(T(asc, "mono_light", 15, SX, y + 20, c["mute"]))
+        a(T(asc, "mono_light", 16, SX, y + 20, c["mute"]))
         if (r + 1) * COLS >= len(days):  # caret under today's byte
             x = HX + (len(row) - 1) * CW
             a(f'<rect class="k" x="{x + 5}" y="{y + RH - 4}" width="{CW - 10}" height="2" fill="{c["fg"]}"/>')
