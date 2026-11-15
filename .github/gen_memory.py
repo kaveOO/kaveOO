@@ -83,8 +83,8 @@ def svg(theme, total, weeks):
     a(f'<rect x="1" y="1" width="{W-2}" height="34" rx="5" fill="{c["panel"]}"/>')
     a(f'<rect x="1" y="34" width="{W-2}" height="1" fill="{c["line"]}"/>')
     a(f'<text x="16" y="23" class="h t">Memory</text>')
-    a(f'<text x="84" y="23" class="t">Address: kaveo!contributions{SP}Display format: Byte{SP}'
-      f'Columns: {len(weeks)}</text>')
+    a(f'<text x="84" y="23" class="t">Address: kaveo!contributions{SP}my GitHub activity, '
+      f'last 12 months</text>')
     a(f'<text x="{W-16}" y="23" class="t" text-anchor="end">{fmt(first)} .. {fmt(last)}</text>')
 
     # month labels over the first week that starts in that month
@@ -112,7 +112,7 @@ def svg(theme, total, weeks):
                 a(f'<rect class="c" x="{x+1}" y="{y + CH - 3}" width="{CW-2}" height="2" fill="{c["caret"]}"/>')
 
     fy = TY + 7 * CH + 28
-    a(f'<text x="16" y="{fy}" class="t">1 byte = 1 day{SP}{total:,} contributions{SP}'
+    a(f'<text x="16" y="{fy}" class="t">1 byte = 1 day, the number is how many contributions{SP}{total:,} contributions{SP}'
       f'{active} active days{SP}max 0x{counts[-1] if counts else 0:02x}</text>')
     # legend
     lx = W - 24 - 5 * 26 - 30

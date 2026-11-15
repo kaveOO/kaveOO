@@ -115,11 +115,18 @@ def previous_last_event():
     """The .lastevent lines already in README.md, kept when the API is down."""
     try:
         lines = open("README.md").read().split("\n")
-        i = next(i for i, l in enumerate(lines) if "<b>.lastevent</b>" in l)
+        i = next(i for i, l in enumerate(lines) if ".lastevent" in l)
         return lines[i + 1:i + 3]
     except (OSError, StopIteration):
         return None
 
+
+INTRO = ("**Alban Billiette**, game security and full-stack developer at 42 Warsaw, "
+         "open to full-time roles. "
+         "My profile is written as a Windows debugger session: the bold lines say what "
+         "each part is, and the blue names are links. "
+         "[kaveo.dev](https://kaveo.dev) · [CV](https://kaveo.dev/Alban-Billiette-CV.pdf) · "
+         "[contact@kaveo.dev](mailto:contact@kaveo.dev)")
 
 P = "0:000&gt; "
 out = []
@@ -128,7 +135,8 @@ w = out.append
 # db: bio as bytes, NUL terminated, int3 padding to the end of the line
 data = BIO.encode("ascii") + b"\x00"
 data += b"\xcc" * (-len(data) % 16)
-w(f"{P}<b>db kaveo!bio</b>")
+w(f"{P}<b>* who I am, as raw bytes</b>")
+w(f"{P}db kaveo!bio")
 for off in range(0, len(data), 16):
     row = data[off:off + 16]
     hx = " ".join(f"{b:02x}" for b in row)
@@ -145,12 +153,14 @@ except Exception as e:
     ev = None
 ev = ev or previous_last_event()
 if ev:
-    w(f"{P}<b>.lastevent</b>")
+    w(f"{P}<b>* what I did last on GitHub</b>")
+    w(f"{P}.lastevent")
     out.extend(ev)
     w("")
 
 # lm: projects as loaded modules
-w(f"{P}<b>lm</b>")
+w(f"{P}<b>* projects (click a name)</b>")
+w(f"{P}lm")
 w("start    end        module name")
 base = 0x10000000
 for name, size, url, note in MODULES:
@@ -160,7 +170,8 @@ for name, size, url, note in MODULES:
 w("")
 
 # k: history as a call stack
-w(f"{P}<b>k</b>")
+w(f"{P}<b>* how I got here, newest first</b>")
+w(f"{P}k")
 w(" # ChildEBP RetAddr")
 ebp, ret = 0x0019fe60, 0x00401000
 for i, (fn, disp, note) in enumerate(FRAMES):
@@ -171,16 +182,17 @@ w(f"{len(FRAMES):02x} {ebp:08x} 00000000 ntdll!RtlUserThreadStart+0x2f")
 w("")
 
 # du: contact strings
-w(f"{P}<b>du kaveo!contact</b>")
+w(f"{P}<b>* where to reach me</b>")
+w(f"{P}du kaveo!contact")
 addr = 0x00405000
 for k, url, label in LINKS:
     s = f"<a href=\"{url}\">{label}</a>" if url else label
     w(f"{addr:08x}  {k:<9}\"{s}\"")
     addr += 0x40
 w("")
-w(f"{P}<b>qd</b>")
+w(f"{P}qd")
 
-readme = "<pre>\n" + "\n".join(out) + "\n</pre>\n"
+readme = (INTRO + "\n\n") + "<pre>\n" + "\n".join(out) + "\n</pre>\n"
 # memory window drawn by gen_memory.py, docked under the session
 readme += """
 <picture>
