@@ -83,15 +83,16 @@ def fetch():
 
 def svg(theme, days):
     c = THEMES[theme]
-    # every edge and baseline on a whole pixel, and W below GitHub's README
-    # column (~845px) so the image is shown 1:1 instead of being resampled
-    CW, RH = 32, 30                   # byte cell width, row height
+    # exactly GitHub's README column on desktop (846px from 1280px windows up),
+    # so it fills the width and is shown 1:1 instead of resampled; every edge
+    # and baseline sits on a whole pixel
+    W = 846
+    CW, RH = 36, 30                   # byte cell width, row height
     AX = 0                            # date column
-    HX = AX + 80                      # first byte
-    SX = HX + COLS * CW + 20          # ascii column
+    HX = AX + 84                      # first byte
     CHW = 9.6                         # Plex Mono advance (600/1000) at 16px
+    SX = W - COLS * CHW - 1           # ascii column, flush right
     TOP = 28                          # below the header line
-    W = round(SX + COLS * CHW + 1)
     H = TOP + 34 + ROWS * RH + 4
 
     active = sorted(n for _, n in days if n)
@@ -128,7 +129,7 @@ def svg(theme, days):
         a(T(asc, "mono_light", 16, SX, y + 20, c["mute"]))
         if (r + 1) * COLS >= len(days):  # caret under today's byte
             x = HX + (len(row) - 1) * CW
-            a(f'<rect class="k" x="{x + 5}" y="{y + RH - 4}" width="{CW - 10}" height="2" fill="{c["fg"]}"/>')
+            a(f'<rect class="k" x="{x + 7}" y="{y + RH - 4}" width="{CW - 14}" height="2" fill="{c["fg"]}"/>')
     head = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" '
             f'role="img" aria-label="GitHub contributions for the last {len(days)} days as a hex dump, '
             f'one byte per day"><title>GitHub contributions, last {len(days)} days</title>'
