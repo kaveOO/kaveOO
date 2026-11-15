@@ -8,6 +8,10 @@
 00403050  61 6e 64 20 73 68 69 70-20 66 75 6c 6c 2d 73 74  and ship full-st
 00403060  61 63 6b 20 70 72 6f 64-75 63 74 73 2e 00 cc cc  ack products....
 
+0:000&gt; <b>.lastevent</b>
+Last event: release <a href="https://github.com/RUSTORIGIN/launcher/releases/tag/v1.3.3">v1.3.3</a> of <a href="https://github.com/RUSTORIGIN/launcher">RUSTORIGIN/launcher</a>
+  debugger time: Thu Nov 12 03:00:42.000 2026 (UTC + 0:00)
+
 0:000&gt; <b>lm</b>
 start    end        module name
 10000000 1004e000   <a href="https://kaveo.dev/work/rustorigin/">rustorigin</a>       anti-cheat for my own Rust servers. 318 bans in 30 days
