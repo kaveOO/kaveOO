@@ -3,7 +3,7 @@
 The last 64 days, in order, 16 bytes per row. Each byte is that day's
 contribution count (capped at 0xff), and the row label is the date of its
 first byte. The ASCII column is what those bytes would spell, like in any
-hex editor. Writes assets/memory-{dark,light}.svg.
+hex editor. Writes assets/memory-{dark,light}-<hash>.svg.
 
 Text is IBM Plex Mono (bytes) and Host Grotesk (labels), the fonts of
 kaveo.dev. GitHub shows the SVG as an image, which cannot load web fonts, so
@@ -12,6 +12,8 @@ every character is drawn from the outlines in fonts/glyphs.json.
 Needs GITHUB_TOKEN (GraphQL requires auth). If the query fails, the SVGs
 already in assets/ are left alone.
 """
+import glob
+import hashlib
 import json
 import os
 import sys
@@ -148,8 +150,15 @@ def main():
         return 0
     os.makedirs(OUT, exist_ok=True)
     for th in THEMES:
-        with open(f"{OUT}/memory-{th}.svg", "w") as f:
-            f.write(svg(th, days))
+        # the content hash is in the file name: GitHub's raw CDN ignores query
+        # strings, so a new name is the only way every viewer gets the new file
+        data = svg(th, days).encode()
+        name = f"memory-{th}-{hashlib.sha1(data).hexdigest()[:8]}.svg"
+        for old in glob.glob(f"{OUT}/memory-{th}*.svg"):
+            if os.path.basename(old) != name:
+                os.remove(old)
+        with open(f"{OUT}/{name}", "wb") as f:
+            f.write(data)
     print(f"{len(days)} days, {days[0][0]} to {days[-1][0]}")
     return 0
 

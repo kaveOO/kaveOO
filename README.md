@@ -24,7 +24,7 @@ start    end        module name
 </pre>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/memory-dark.svg?v=7cdab282">
-  <source media="(prefers-color-scheme: light)" srcset="assets/memory-light.svg?v=4c2cfc68">
-  <img src="assets/memory-dark.svg?v=7cdab282" alt="GitHub contributions for the last 64 days as a hex dump, one byte per day">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/memory-dark-5c48c9f2.svg">
+  <source media="(prefers-color-scheme: light)" srcset="assets/memory-light-2140d61d.svg">
+  <img src="assets/memory-dark-5c48c9f2.svg" alt="GitHub contributions for the last 64 days as a hex dump, one byte per day">
 </picture>

@@ -149,20 +149,18 @@ for k, url, label in LINKS:
 
 readme = (INTRO + "\n\n") + "<pre>\n" + "\n".join(out) + "\n</pre>\n"
 # memory window drawn by gen_memory.py, docked under the session
-# ?v=<content hash> so GitHub's image cache picks up every new version
-def v(path):
-    import hashlib
-    try:
-        return hashlib.sha1(open(path, "rb").read()).hexdigest()[:8]
-    except OSError:
-        return "0"
+def current(theme):
+    """The memory SVG gen_memory.py wrote last (its name carries a content hash)."""
+    import glob
+    files = sorted(glob.glob(f"assets/memory-{theme}-*.svg"))
+    return files[-1] if files else f"assets/memory-{theme}.svg"
 
-dark, light = "assets/memory-dark.svg", "assets/memory-light.svg"
+dark, light = current("dark"), current("light")
 readme += f"""
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="{dark}?v={v(dark)}">
-  <source media="(prefers-color-scheme: light)" srcset="{light}?v={v(light)}">
-  <img src="{dark}?v={v(dark)}" alt="GitHub contributions for the last 64 days as a hex dump, one byte per day">
+  <source media="(prefers-color-scheme: dark)" srcset="{dark}">
+  <source media="(prefers-color-scheme: light)" srcset="{light}">
+  <img src="{dark}" alt="GitHub contributions for the last 64 days as a hex dump, one byte per day">
 </picture>
 """
 open("README.md", "w").write(readme)
