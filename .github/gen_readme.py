@@ -187,11 +187,20 @@ w(f"{P}qd")
 
 readme = (INTRO + "\n\n") + "<pre>\n" + "\n".join(out) + "\n</pre>\n"
 # memory window drawn by gen_memory.py, docked under the session
-readme += """
+# ?v=<content hash> so GitHub's image cache picks up every new version
+def v(path):
+    import hashlib
+    try:
+        return hashlib.sha1(open(path, "rb").read()).hexdigest()[:8]
+    except OSError:
+        return "0"
+
+dark, light = "assets/memory-dark.svg", "assets/memory-light.svg"
+readme += f"""
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/memory-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/memory-light.svg">
-  <img src="assets/memory-dark.svg" width="100%" alt="Contribution calendar drawn as a memory dump, one byte per day">
+  <source media="(prefers-color-scheme: dark)" srcset="{dark}?v={v(dark)}">
+  <source media="(prefers-color-scheme: light)" srcset="{light}?v={v(light)}">
+  <img src="{dark}?v={v(dark)}" width="100%" alt="GitHub contributions for the last 128 days as a hex dump, one byte per day">
 </picture>
 """
 open("README.md", "w").write(readme)

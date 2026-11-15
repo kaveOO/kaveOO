@@ -23,9 +23,9 @@ QUERY = """{user(login:"%s"){contributionsCollection{contributionCalendar{
 
 THEMES = {
     "dark":  dict(fg="#e6edf3",
-                  mute="#7d8590", zero="#484f58", heat="110,149,255"),
+                  mute="#7d8590", zero="#484f58", heat="163,113,247"),
     "light": dict(fg="#1f2328",
-                  mute="#656d76", zero="#afb8c1", heat="61,107,255"),
+                  mute="#656d76", zero="#afb8c1", heat="130,80,223"),
 }
 MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace"
 

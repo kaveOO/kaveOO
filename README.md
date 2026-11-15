@@ -44,7 +44,7 @@ start    end        module name
 </pre>
 
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/memory-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/memory-light.svg">
-  <img src="assets/memory-dark.svg" width="100%" alt="Contribution calendar drawn as a memory dump, one byte per day">
+  <source media="(prefers-color-scheme: dark)" srcset="assets/memory-dark.svg?v=d019979d">
+  <source media="(prefers-color-scheme: light)" srcset="assets/memory-light.svg?v=c680ab0f">
+  <img src="assets/memory-dark.svg?v=d019979d" width="100%" alt="GitHub contributions for the last 128 days as a hex dump, one byte per day">
 </picture>
