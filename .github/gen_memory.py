@@ -22,9 +22,9 @@ QUERY = """{user(login:"%s"){contributionsCollection{contributionCalendar{
   weeks{contributionDays{date contributionCount}}}}}}""" % USER
 
 THEMES = {
-    "dark":  dict(bg="#0d1117", bar="#161b22", line="#30363d", fg="#e6edf3",
+    "dark":  dict(fg="#e6edf3",
                   mute="#7d8590", zero="#484f58", heat="110,149,255"),
-    "light": dict(bg="#ffffff", bar="#f6f8fa", line="#d0d7de", fg="#1f2328",
+    "light": dict(fg="#1f2328",
                   mute="#656d76", zero="#afb8c1", heat="61,107,255"),
 }
 MONO = "ui-monospace,SFMono-Regular,Menlo,Consolas,'Liberation Mono',monospace"
@@ -45,13 +45,13 @@ def fetch():
 def svg(theme, days):
     c = THEMES[theme]
     CW, RH = 34, 30                   # byte cell width, row height
-    AX = 24                           # date column
+    AX = 2                            # date column
     HX = AX + 92                      # first byte
     SX = HX + COLS * CW + 22          # ascii column
     CHW = 9.6                         # ascii char width at 16px
-    TOP = 50                          # below the title bar
+    TOP = 26                          # below the header line
     W = int(SX + COLS * CHW + AX)
-    H = TOP + 34 + ROWS * RH + 18
+    H = TOP + 34 + ROWS * RH + 4
 
     active = sorted(n for _, n in days if n)
     cuts = [active[int(p * (len(active) - 1))] for p in (.25, .5, .75)] if active else [0, 0, 0]
@@ -67,13 +67,9 @@ def svg(theme, days):
       f'.s{{font-size:14px}}.f{{fill:{c["fg"]}}}'
       f'.k{{animation:k 1.06s steps(1) infinite}}@keyframes k{{50%{{opacity:0}}}}'
       f'@media (prefers-reduced-motion:reduce){{.k{{animation:none}}}}</style>')
-    a(f'<rect width="{W}" height="{H}" rx="6" fill="{c["bg"]}"/>')
-    a(f'<path d="M6 .5h{W-12}a5.5 5.5 0 0 1 5.5 5.5v30H.5V6A5.5 5.5 0 0 1 6 .5z" fill="{c["bar"]}"/>')
-    a(f'<rect x=".5" y=".5" width="{W-1}" height="{H-1}" rx="5.5" fill="none" stroke="{c["line"]}"/>')
-    a(f'<rect x="1" y="36" width="{W-2}" height="1" fill="{c["line"]}"/>')
-    a(f'<text x="{AX}" y="24" class="s f">Memory</text>')
-    a(f'<text x="{AX + 76}" y="24" class="s">kaveo!activity</text>')
-    a(f'<text x="{W - AX}" y="24" class="s" text-anchor="end">1 byte = contributions that day</text>')
+    a(f'<text x="{AX}" y="18" class="s f">Memory</text>')
+    a(f'<text x="{AX + 76}" y="18" class="s">kaveo!activity</text>')
+    a(f'<text x="{W - AX}" y="18" class="s" text-anchor="end">1 byte = contributions that day</text>')
 
     hy = TOP + 22
     for i in range(COLS):
@@ -90,7 +86,7 @@ def svg(theme, days):
         for i, (d, n) in enumerate(row):
             x = HX + i * CW
             if n:
-                a(f'<rect x="{x + 2}" y="{y + 3}" width="{CW - 4}" height="{RH - 6}" rx="3" '
+                a(f'<rect x="{x + 1}" y="{y + 3}" width="{CW - 2}" height="{RH - 6}" '
                   f'fill="rgb({c["heat"]})" fill-opacity="{shade(n)}"/>')
             a(f'<text x="{x + CW/2}" y="{y + 20}" class="{"b" if n else "z"}">{min(n, 255):02X}</text>')
             ch = chr(n) if 0x21 <= n < 0x7f else "."
