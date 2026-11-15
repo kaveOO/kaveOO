@@ -16,9 +16,6 @@ from html import escape
 USER = "kaveOO"
 SKIP_REPOS = {f"{USER}/{USER}"}  # the README's own updates are not news
 
-BIO = "Alban Billiette. From France, living in Warsaw."
-BIO_ADDR = 0x00403000
-
 # name, url, note
 MODULES = [
     ("rustorigin", "https://kaveo.dev/work/rustorigin/",       "anti-cheat for my own Rust servers. 318 bans in 30 days"),
@@ -26,15 +23,6 @@ MODULES = [
     ("kaveos", "https://github.com/kaveOO/kaveOS",         "x86 kernel from scratch in C and asm, no libc"),
     ("rustaveo", "https://kaveo.dev/work/rustaveo/",         "paid SaaS for Rust players, built and run alone"),
     ("arbor", "https://github.com/kaveOO/Arbor",          "booking engine, 1st on Track B at Codaro x Google"),
-    ("panomoche", "https://github.com/kaveOO/panomoche",      "sorts street pictures for Panoramax with ML"),
-]
-
-# most recent frame first, like a real stack
-FRAMES = [
-    ("codaro_google_hackathon", "1st place, booking track   2026"),
-    ("warsaw_hacks", "most innovative idea       2026"),
-    ("common_core_le_havre", "42 Common Core done        2026"),
-    ("main", "first line of code     oct 2024"),
 ]
 
 LINKS = [
@@ -42,8 +30,6 @@ LINKS = [
     ("cv",       "https://kaveo.dev/Alban-Billiette-CV.pdf",  "kaveo.dev/cv.pdf"),
     ("mail",     "mailto:contact@kaveo.dev",                  "contact@kaveo.dev"),
     ("linkedin", "https://www.linkedin.com/in/kaveooo/",      "linkedin.com/in/kaveooo"),
-    ("youtube",  "https://www.youtube.com/@Kaveo_o",          "youtube.com/@Kaveo_o"),
-    ("discord",  None,                                        ".kaveo"),
 ]
 
 
@@ -127,19 +113,6 @@ P = "0:000&gt; "
 out = []
 w = out.append
 
-# db: bio as bytes, NUL terminated, int3 padding to the end of the line
-data = BIO.encode("ascii") + b"\x00"
-data += b"\xcc" * (-len(data) % 16)
-w(f"{P}<b>* about</b>")
-w(f"{P}db kaveo!bio")
-for off in range(0, len(data), 16):
-    row = data[off:off + 16]
-    hx = " ".join(f"{b:02x}" for b in row)
-    hx = hx[:23] + "-" + hx[24:]  # WinDbg's mid-row dash
-    asc = "".join(chr(b) if 32 <= b < 127 else "." for b in row)
-    w(f"{BIO_ADDR + off:08x}  {hx}  {escape(asc)}")
-w("")
-
 # .lastevent: latest public activity on GitHub
 try:
     ev = last_event()
@@ -165,15 +138,6 @@ for (name, url, note), size in zip(MODULES, SIZES):
     base += (size + 0xfffff) & ~0xfffff  # next 1 MiB boundary
 w("")
 
-# k: history as a call stack
-w(f"{P}<b>* timeline</b>")
-w(f"{P}kc")
-w(" # Call Site")
-for i, (fn, note) in enumerate(FRAMES):
-    w(f"{i:02x} {'kaveo!' + fn:<36}{escape(note)}")
-w(f"{len(FRAMES):02x} ntdll!RtlUserThreadStart")
-w("")
-
 # du: contact strings
 w(f"{P}<b>* contact</b>")
 w(f"{P}du kaveo!contact")
@@ -182,8 +146,6 @@ for k, url, label in LINKS:
     s = f"<a href=\"{url}\">{label}</a>" if url else label
     w(f"{addr:08x}  {k:<9}\"{s}\"")
     addr += 0x40
-w("")
-w(f"{P}qd")
 
 readme = (INTRO + "\n\n") + "<pre>\n" + "\n".join(out) + "\n</pre>\n"
 # memory window drawn by gen_memory.py, docked under the session
@@ -200,7 +162,7 @@ readme += f"""
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="{dark}?v={v(dark)}">
   <source media="(prefers-color-scheme: light)" srcset="{light}?v={v(light)}">
-  <img src="{dark}?v={v(dark)}" width="100%" alt="GitHub contributions for the last 128 days as a hex dump, one byte per day">
+  <img src="{dark}?v={v(dark)}" width="100%" alt="GitHub contributions for the last 64 days as a hex dump, one byte per day">
 </picture>
 """
 open("README.md", "w").write(readme)

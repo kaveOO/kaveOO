@@ -1,6 +1,6 @@
 """Draws recent GitHub activity as a hex editor memory view.
 
-The last 128 days, in order, 16 bytes per row. Each byte is that day's
+The last 64 days, in order, 16 bytes per row. Each byte is that day's
 contribution count (capped at 0xff), and the row label is the date of its
 first byte. The ASCII column is what those bytes would spell, like in any
 hex editor. Writes assets/memory-{dark,light}.svg.
@@ -16,7 +16,7 @@ from datetime import date
 
 USER = "kaveOO"
 OUT = "assets"
-ROWS, COLS = 8, 16
+ROWS, COLS = 4, 16
 
 QUERY = """{user(login:"%s"){contributionsCollection{contributionCalendar{
   weeks{contributionDays{date contributionCount}}}}}}""" % USER
