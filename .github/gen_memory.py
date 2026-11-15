@@ -57,11 +57,13 @@ class Text:
             if d:
                 gid = f"{font[0]}{font[-1]}{ord(ch):x}"
                 self.used[gid] = d
-                uses.append(f'<use href="#{gid}" x="{pen}"/>')
+                # each glyph starts on a whole pixel: outlines have no hinting,
+                # so this is what keeps small text sharp on 1x screens
+                gx = round(x + pen * k)
+                uses.append(f'<use href="#{gid}" transform="translate({gx} {round(y)}) scale({k:.5f})"/>')
             pen += adv
         c = f' class="{cls}"' if cls else ""
-        return (f'<g{c} fill="{fill}" transform="translate({x:.1f} {y:.1f}) scale({k:.5f})">'
-                + "".join(uses) + "</g>")
+        return f'<g{c} fill="{fill}">' + "".join(uses) + "</g>"
 
     def defs(self):
         return "<defs>" + "".join(f'<path id="{g}" d="{d}"/>' for g, d in self.used.items()) + "</defs>"
@@ -81,13 +83,15 @@ def fetch():
 
 def svg(theme, days):
     c = THEMES[theme]
-    CW, RH = 34, 30                   # byte cell width, row height
-    AX = 2                            # date column
-    HX = AX + 92                      # first byte
-    SX = HX + COLS * CW + 22          # ascii column
-    CHW = 9.6                         # Plex Mono advance (600/1000) at 16px
+    # every edge and baseline on a whole pixel, and W below GitHub's README
+    # column (~845px) so the image is shown 1:1 instead of being resampled
+    CW, RH = 32, 30                   # byte cell width, row height
+    AX = 0                            # date column
+    HX = AX + 80                      # first byte
+    SX = HX + COLS * CW + 20          # ascii column
+    CHW = 9                           # Plex Mono advance (600/1000) at 15px
     TOP = 26                          # below the header line
-    W = int(SX + COLS * CHW + AX)
+    W = SX + COLS * CHW
     H = TOP + 34 + ROWS * RH + 4
 
     active = sorted(n for _, n in days if n)
@@ -121,10 +125,10 @@ def svg(theme, days):
             a(T(f"{min(n, 255):02X}", "mono", 16, x + CW / 2, y + 20,
                 c["fg"] if n else c["zero"], "middle"))
             asc += chr(n) if 0x21 <= n < 0x7f else "."
-        a(T(asc, "mono_light", 16, SX, y + 20, c["mute"]))
+        a(T(asc, "mono_light", 15, SX, y + 20, c["mute"]))
         if (r + 1) * COLS >= len(days):  # caret under today's byte
             x = HX + (len(row) - 1) * CW
-            a(f'<rect class="k" x="{x + 6}" y="{y + RH - 4}" width="{CW - 12}" height="2" fill="{c["fg"]}"/>')
+            a(f'<rect class="k" x="{x + 5}" y="{y + RH - 4}" width="{CW - 10}" height="2" fill="{c["fg"]}"/>')
     head = (f'<svg xmlns="http://www.w3.org/2000/svg" width="{W}" height="{H}" viewBox="0 0 {W} {H}" '
             f'role="img" aria-label="GitHub contributions for the last {len(days)} days as a hex dump, '
             f'one byte per day"><title>GitHub contributions, last {len(days)} days</title>'

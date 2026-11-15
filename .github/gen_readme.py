@@ -162,7 +162,7 @@ readme += f"""
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="{dark}?v={v(dark)}">
   <source media="(prefers-color-scheme: light)" srcset="{light}?v={v(light)}">
-  <img src="{dark}?v={v(dark)}" width="100%" alt="GitHub contributions for the last 64 days as a hex dump, one byte per day">
+  <img src="{dark}?v={v(dark)}" alt="GitHub contributions for the last 64 days as a hex dump, one byte per day">
 </picture>
 """
 open("README.md", "w").write(readme)
