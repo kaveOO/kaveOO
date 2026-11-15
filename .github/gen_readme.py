@@ -5,29 +5,18 @@ encoding of the ASCII column. Edit the data below and run:  python3 .github/gen_
 """
 from html import escape
 
-BIO = ("Alban Billiette. Systems programmer from France, living in Warsaw, "
-       "studying at 42. I reverse-engineer anti-cheats, write Windows kernel "
-       "drivers and build full-stack products.")
+BIO = ("Alban Billiette, 42 Warsaw. I reverse anti-cheats, write "
+       "Windows kernel drivers and ship full-stack products.")
 BIO_ADDR = 0x00403000
 
 # name, size, url, note
 MODULES = [
     ("rustorigin",      0x4e000, "https://kaveo.dev/work/rustorigin/",       "anti-cheat for my own Rust servers. 318 bans in 30 days"),
     ("assaultcubedma",  0x1c000, "https://github.com/kaveOO/AssaultCubeDMA", "reads game memory over a PCIe DMA card, not the OS"),
-    ("kaveos",          0x12000, "https://github.com/kaveOO/kaveOS",         "x86 kernel from scratch. GDT, IDT, keyboard, shell"),
+    ("kaveos",          0x12000, "https://github.com/kaveOO/kaveOS",         "x86 kernel from scratch in C and asm, no libc"),
     ("rustaveo",        0x61000, "https://kaveo.dev/work/rustaveo/",         "paid SaaS for Rust players, built and run alone"),
-    ("arbor",           0x38000, "https://github.com/kaveOO/Arbor",          "booking engine that pivots on one JSON file"),
-    ("warsawhacks",     0x0f000, "https://github.com/kaveOO/42WarsawHacks",  "42 campus dashboard, written solo in 30 hours"),
-    ("panomoche",       0x23000, "https://github.com/kaveOO/panomoche",      "sorts street pictures for Panoramax, says why"),
-    ("readwritekernel", 0x03000, "https://github.com/kaveOO/ReadWriteKernel","my first driver. RPM/WPM from ring 0"),
-    ("threadhijacking", 0x02000, "https://github.com/kaveOO/ThreadHijacking","shellcode run on another process's main thread"),
-]
-
-STACK = [
-    ("kernel",    "C, C++, x86-64 asm, WDK, QEMU"),
-    ("reversing", "IDA, x64dbg, Cheat Engine, MemProcFS"),
-    ("security",  "anti-cheat internals, BattlEye, EAC, DMA"),
-    ("web",       "TypeScript, React, Fastify, FastAPI, Go, Postgres"),
+    ("arbor",           0x38000, "https://github.com/kaveOO/Arbor",          "booking engine, 1st on Track B at Codaro x Google"),
+    ("panomoche",       0x23000, "https://github.com/kaveOO/panomoche",      "sorts street pictures for Panoramax with ML"),
 ]
 
 # most recent frame first, like a real stack
@@ -35,13 +24,11 @@ FRAMES = [
     ("codaro_google_hackathon", 0x1f2, "1st place, booking track   2026"),
     ("warsaw_hacks",            0x0a4, "most innovative idea       2026"),
     ("common_core_le_havre",    0x3c0, "42 Common Core done        2026"),
-    ("first_kernel_driver",     0x11b, "ring 0 for the first time  2025"),
     ("main",                    0x02c, "first line of code     oct 2024"),
 ]
 
 LINKS = [
     ("site",     "https://kaveo.dev",                         "kaveo.dev"),
-    ("notes",    "https://kaveo.dev/notes/",                  "kaveo.dev/notes"),
     ("cv",       "https://kaveo.dev/Alban-Billiette-CV.pdf",  "kaveo.dev/cv.pdf"),
     ("mail",     "mailto:contact@kaveo.dev",                  "contact@kaveo.dev"),
     ("linkedin", "https://www.linkedin.com/in/kaveooo/",      "linkedin.com/in/kaveooo"),
@@ -75,12 +62,6 @@ for name, size, url, note in MODULES:
     base += (size + 0xfffff) & ~0xfffff  # next 1 MiB boundary
 w("")
 
-# dt: stack as a struct
-w(f"{P}<b>dt kaveo!_STACK @esi</b>")
-for i, (k, v) in enumerate(STACK):
-    w(f"   +0x{i*4:03x} {k:<10}: \"{escape(v)}\"")
-w("")
-
 # k: history as a call stack
 w(f"{P}<b>k</b>")
 w(" # ChildEBP RetAddr")
@@ -101,8 +82,6 @@ for k, url, label in LINKS:
     addr += 0x40
 w("")
 w(f"{P}<b>qd</b>")
-w("quit:")
-w("Detached. kaveo.exe is still running.")
 
 readme = "<pre>\n" + "\n".join(out) + "\n</pre>\n"
 open("README.md", "w").write(readme)
